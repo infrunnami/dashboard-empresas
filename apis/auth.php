@@ -1,4 +1,5 @@
 <?php
+session_start();
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
@@ -9,21 +10,25 @@ if ($conn->connect_error) {
     die(json_encode(["error" => "Error de conexión a la base de datos"]));
 }
 
-// Recibir JSON desde Axios
 $data = json_decode(file_get_contents("php://input"));
 
-if (isset($data->username) && isset($data->password)) {
-    $username = $conn->real_escape_string($data->username);
-    $password = md5($data->password); // Encriptar igual que en la BBDD
+if (isset($data->email) && isset($data->password)) {
+    $email = $conn->real_escape_string($data->email);
+    $password = md5($data->password);
 
-    $sql = "SELECT role FROM users WHERE username='$username' AND password='$password'";
+    $sql = "SELECT id, role FROM users WHERE email='$email' AND password='$password'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
+        
+        $_SESSION["user_id"] = $row["id"];
+        $_SESSION["email"] = $email;
+        $_SESSION["role"] = $row["role"];
+
         echo json_encode(["status" => "success", "role" => $row["role"]]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Usuario o contraseña incorrectos"]);
+        echo json_encode(["status" => "error", "message" => "Correo o contraseña incorrectos"]);
     }
 } else {
     echo json_encode(["status" => "error", "message" => "Datos incompletos"]);

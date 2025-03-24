@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrar Usuarios</title>
-       <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-   
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
     <style>
         body {
             background-color: #fff;
@@ -33,6 +30,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Usuario</th>
+                    <th>Correo</th>
                     <th>Rol</th>
                     <th>Acciones</th>
                 </tr>
@@ -54,6 +52,10 @@
                     <div class="mb-3">
                         <label>Usuario</label>
                         <input type="text" class="form-control" id="username">
+                    </div>
+                    <div class="mb-3">
+                        <label>Correo</label>
+                        <input type="email" class="form-control" id="email">
                     </div>
                     <div class="mb-3">
                         <label>Contraseña</label>
@@ -87,17 +89,19 @@
                         table.row.add([
                             user.id,
                             user.username,
+                            user.email,
                             user.role,
-                            `<button class="btn btn-sm btn-dark" onclick="editUser(${user.id}, '${user.username}', '${user.role}')">Editar</button>
+                            `<button class="btn btn-sm btn-dark" onclick="openModal(${user.id}, '${user.username}', '${user.role}','${user.email}')">Editar</button>
                              <button class="btn btn-sm btn-secondary" onclick="deleteUser(${user.id})">Eliminar</button>`
                         ]).draw();
                     });
                 });
         }
 
-        function openModal(id = null, username = "", role = "") {
+        function openModal(id = null, username = "", role = "",email="") {
             $("#userId").val(id || "");
             $("#username").val(username);
+            $('#email').val(email);
             $("#role").val(role);
             $("#password").val(""); // Limpia la contraseña
             $("#userModal").modal("show");
@@ -109,7 +113,8 @@
                 id: id,
                 username: $("#username").val(),
                 password: $("#password").val(),
-                role: $("#role").val()
+                role: $("#role").val(),
+                email:$('#email').val()
             };
 
             let url = id ? "./apis/users.php?update" : "./apis/users.php?create";

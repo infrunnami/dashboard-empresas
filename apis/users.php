@@ -11,7 +11,7 @@ if ($conn->connect_error) {
 
 // Obtener todos los usuarios
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    $result = $conn->query("SELECT id, username, role FROM users");
+    $result = $conn->query("SELECT id, username, role , email FROM users");
     echo json_encode($result->fetch_all(MYSQLI_ASSOC));
 }
 
@@ -21,8 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["create"])) {
     $username = $conn->real_escape_string($data->username);
     $password = md5($data->password);
     $role = $conn->real_escape_string($data->role);
+    $email = $conn->real_escape_string($data->email);
 
-    $conn->query("INSERT INTO users (username, password, role) VALUES ('$username', '$password', '$role')");
+    $conn->query("INSERT INTO users (username, password, role, email) VALUES ('$username', '$password', '$role','$email')");
     echo json_encode(["message" => "Usuario agregado"]);
 }
 
@@ -33,8 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["update"])) {
     $username = $conn->real_escape_string($data->username);
     $role = $conn->real_escape_string($data->role);
     $password = !empty($data->password) ? "password = '".md5($data->password)."'," : "";
+    $email = $conn->real_escape_string($data->email);
 
-    $conn->query("UPDATE users SET username='$username', $password role='$role' WHERE id=$id");
+    $conn->query("UPDATE users SET username='$username', $password role='$role' , email='$email' WHERE id=$id");
     echo json_encode(["message" => "Usuario actualizado"]);
 }
 
