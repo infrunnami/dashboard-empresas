@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Usuarios</title>
+       <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+   
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <style>
+        body {
+            background-color: #fff;
+            color: #333;
+        }
+        .btn {
+            background: #666;
+            color: white;
+            border: none;
+        }
+        .btn:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="mb-4">Administración de Usuarios</h2>
+        <button class="btn btn-dark mb-3" onclick="openModal()">Agregar Usuario</button>
+        
+        <table id="usersTable" class="display table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Modal para agregar/editar usuario -->
+    <div id="userModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="userId">
+                    <div class="mb-3">
+                        <label>Usuario</label>
+                        <input type="text" class="form-control" id="username">
+                    </div>
+                    <div class="mb-3">
+                        <label>Contraseña</label>
+                        <input type="password" class="form-control" id="password">
+                    </div>
+                    <div class="mb-3">
+                        <label>Rol</label>
+                        <select class="form-control" id="role">
+                            <option value="admin">Admin</option>
+                            <option value="user1">User1</option>
+                            <option value="user2">User2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-dark" onclick="saveUser()">Guardar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+   
+        function loadUsers() {
+            axios.get("./apis/users.php")
+                .then(response => {
+                    let table = $('#usersTable').DataTable();
+                    table.clear();
+                    response.data.forEach(user => {
+                        table.row.add([
+                            user.id,
+                            user.username,
+                            user.role,
+                            `<button class="btn btn-sm btn-dark" onclick="editUser(${user.id}, '${user.username}', '${user.role}')">Editar</button>
+                             <button class="btn btn-sm btn-secondary" onclick="deleteUser(${user.id})">Eliminar</button>`
+                        ]).draw();
+                    });
+                });
+        }
+
+        function openModal(id = null, username = "", role = "") {
+            $("#userId").val(id || "");
+            $("#username").val(username);
+            $("#role").val(role);
+            $("#password").val(""); // Limpia la contraseña
+            $("#userModal").modal("show");
+        }
+
+        function saveUser() {
+            let id = $("#userId").val();
+            let user = {
+                id: id,
+                username: $("#username").val(),
+                password: $("#password").val(),
+                role: $("#role").val()
+            };
+
+            let url = id ? "./apis/users.php?update" : "./apis/users.php?create";
+            
+            axios.post(url, user)
+                .then(() => {
+                    $("#userModal").modal("hide");
+                    loadUsers();
+                });
+        }
+
+        function deleteUser(id) {
+            if (confirm("¿Eliminar este usuario?")) {
+                axios.post("./apis/users.php?delete", { id })
+                    .then(() => loadUsers());
+            }
+        }
+    </script>
+
+    
+</body>
+</html>
