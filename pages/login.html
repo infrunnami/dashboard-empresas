@@ -43,7 +43,7 @@
 <body>
     
     <div class="login-box">
-        <img src="./wit.png" alt="" height="70px">
+        <img src="../assests/wit.png" alt="" height="70px">
         <h2>Iniciar Sesión</h2>
         <input type="text" class="form-control" placeholder="Correo" id="email">
         <input type="password" class="form-control" placeholder="Contraseña" id="password">
@@ -57,10 +57,10 @@
             let email = document.getElementById("email").value;
             let pass = document.getElementById("password").value;
     
-            axios.post("./apis/auth.php", { email: email, password: pass }, { withCredentials: true })
+            axios.post("http://localhost/inicio/apis/auth.php", { email: email, password: pass }, { withCredentials: true })
                 .then(response => {
                     if (response.data.status === "success") {
-                        window.location.href = "app.html"; 
+                        window.location.href = "../app.html"; 
                     } else {
                         alert(response.data.message);
                     }
