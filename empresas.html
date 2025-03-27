@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Empresas</title>
+
+    <style>
+        body { background-color: #fff; color: #333; }
+        .btn { background: #666; color: white; border: none; }
+        .btn:hover { background: #444; }
+        .form-switch .form-check-input { cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="mb-4">Administración de Empresas</h2>
+        <button class="btn btn-dark mb-3" onclick="openModal()">Agregar Empresa</button>
+        
+        <table id="empresasTable" class="display table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Modal para agregar/editar empresa -->
+    <div id="empresaModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Empresa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="empresaId">
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" id="nombre">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-dark" onclick="saveEmpresa()">Guardar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            loadEmpresas();
+        });
+
+        function loadEmpresas() {
+            axios.get("http://localhost/inicio/apis/empresas.php")
+                .then(response => {
+                    let table = $('#empresasTable').DataTable();
+                    table.clear();
+                    response.data.forEach(emp => {
+                        let estadoTexto = emp.estado == 1 ? "Activo" : "Inactivo";
+                        let switchButton = `
+                            <div class="form-check form-switch">
+                                <input class="form-check-input toggle-estado" type="checkbox" 
+                                    data-id="${emp.id}" ${emp.estado == 1 ? "checked" : ""}>
+                            </div>
+                        `;
+                        table.row.add([
+                            emp.id,
+                            emp.nombre,
+                            estadoTexto,
+                            `<div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-sm btn-dark btn-edit me-2" 
+                                data-id="${emp.id}" 
+                                data-nombre="${emp.nombre}">Editar</button>
+                            ${switchButton}
+                        </div>`
+                        ]).draw();
+                    });
+                });
+        }
+
+        $(document).on("click", ".btn-edit", function () {
+            let id = $(this).data("id");
+            let nombre = $(this).data("nombre");
+            openModal(id, nombre);
+        });
+
+        function openModal(id = null, nombre = "") {
+            $("#empresaId").val(id || "");
+            $("#nombre").val(nombre);
+
+            let empresaModal = new bootstrap.Modal(document.getElementById("empresaModal"));
+            empresaModal.show();
+        }
+
+        function saveEmpresa() {
+            let id = $("#empresaId").val();
+            let empresa = {
+                id: id,
+                nombre: $("#nombre").val()
+            };
+
+            let url = id ? "http://localhost/inicio/apis/empresas.php?update" : "http://localhost/inicio/apis/empresas.php?create";
+            
+            axios.post(url, empresa)
+                .then(() => {
+                    $("#empresaModal").modal("hide");
+                    loadEmpresas();
+                });
+        }
+
+        $(document).on("change", ".toggle-estado", function () {
+            let id = $(this).data("id");
+            let estado = $(this).is(":checked") ? 1 : 0;
+
+            axios.post("http://localhost/inicio/apis/empresas.php?toggle", { id, estado })
+                .then(() => loadEmpresas());
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

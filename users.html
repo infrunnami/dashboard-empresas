@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,21 +11,24 @@
             background-color: #fff;
             color: #333;
         }
+
         .btn {
             background: #666;
             color: white;
             border: none;
         }
+
         .btn:hover {
             background: #444;
         }
     </style>
 </head>
+
 <body>
     <div class="container mt-4">
         <h2 class="mb-4">Administración de Usuarios</h2>
         <button class="btn btn-dark mb-3" onclick="openModal()">Agregar Usuario</button>
-        
+
         <table id="usersTable" class="display table table-striped">
             <thead>
                 <tr>
@@ -32,6 +36,8 @@
                     <th>Usuario</th>
                     <th>Correo</th>
                     <th>Rol</th>
+
+                    <th>Empresa</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -61,13 +67,16 @@
                         <label>Contraseña</label>
                         <input type="password" class="form-control" id="password">
                     </div>
+
+                    <div class="mb-3">
+                        <label>Empresa</label>
+                        <select type="text" class="form-control " id="empresa"></select>
+
+                    </div>
                     <div class="mb-3">
                         <label>Rol</label>
-                        <select class="form-control" id="role">
-                            <option value="admin">Admin</option>
-                            <option value="user1">User1</option>
-                            <option value="user2">User2</option>
-                        </select>
+                        <select type="text" class="form-control " id="roles"></select>
+                       
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -79,7 +88,30 @@
     </div>
 
     <script>
-   
+        loadEmpresas();
+        loadRoles();
+
+        function loadEmpresas() {
+            axios.get("http://localhost/inicio/apis/listar_empresas.php").then(response => {
+                let select = $("#empresa");
+                select.empty();
+                response.data.forEach(emp => {
+                    select.append(`<option value="${emp.id}">${emp.nombre}</option>`);
+                });
+            });
+        }
+
+        function loadRoles() {
+            axios.get("http://localhost/inicio/apis/roles.php").then(response => {
+                let select = $("#roles");
+                select.empty();
+                response.data.forEach(rol => {
+                    select.append(`<option value="${rol.id}">${rol.nombre}</option>`);
+                });
+            });
+        }
+
+
         function loadUsers() {
             axios.get("./apis/users.php")
                 .then(response => {
@@ -90,21 +122,29 @@
                             user.id,
                             user.username,
                             user.email,
-                            user.role,
-                            `<button class="btn btn-sm btn-dark" onclick="openModal(${user.id}, '${user.username}', '${user.role}','${user.email}')">Editar</button>
-                             <button class="btn btn-sm btn-secondary" onclick="deleteUser(${user.id})">Eliminar</button>`
+                            user.rol,
+                            user.empresa,
+                            `<button class="btn btn-sm btn-dark" onclick="openModal(${user.id}, '${user.username}', '${user.email}',${user.empresa_id},${user.rol_id})">Editar</button>
+                     <button class="btn btn-sm btn-secondary" onclick="deleteUser(${user.id})">Eliminar</button>`
                         ]).draw();
+
+                        console.log (user.rol)
                     });
                 });
         }
 
-        function openModal(id = null, username = "", role = "",email="") {
+        function openModal(id = null, username = "", email = "", empresa_id="", role_id="") {
             $("#userId").val(id || "");
             $("#username").val(username);
             $('#email').val(email);
-            $("#role").val(role);
-            $("#password").val(""); // Limpia la contraseña
+            $("#roles").val(role_id);
+
+            // Asegúrate de que empresa_id sea un número antes de asignarlo al select
+            $("#empresa").val(parseInt(empresa_id));
+            $("#password").val("");
             $("#userModal").modal("show");
+
+            console.log(empresa_id);
         }
 
         function saveUser() {
@@ -113,12 +153,13 @@
                 id: id,
                 username: $("#username").val(),
                 password: $("#password").val(),
-                role: $("#role").val(),
-                email:$('#email').val()
+                role_id: $("#roles").val(),
+                email: $('#email').val(),
+                empresa_id: $('#empresa').val()
             };
 
             let url = id ? "./apis/users.php?update" : "./apis/users.php?create";
-            
+
             axios.post(url, user)
                 .then(() => {
                     $("#userModal").modal("hide");
@@ -134,6 +175,7 @@
         }
     </script>
 
-    
+
 </body>
+
 </html>

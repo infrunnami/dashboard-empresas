@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Permisos de Roles</title>
+
+    <style>
+        body { background-color: #fff; color: #333; }
+        .btn { background: #666; color: white; border: none; }
+        .btn:hover { background: #444; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="mb-4">Administración de Permisos de Roles</h2>
+        
+        <table id="roleItemsTable" class="display table table-striped">
+            <thead>
+                <tr>
+                    <th>Rol</th>
+                    <th>Ítem</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button class="btn btn-dark mt-3" onclick="openModal()">Asignar Permiso</button>
+    </div>
+
+    <!-- Modal para asignar permisos -->
+    <div id="roleItemModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Asignar Permiso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Rol</label>
+                        <select class="form-control" id="roleSelect"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Ítem</label>
+                        <select class="form-control" id="itemSelect"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-dark" onclick="saveRoleItem()">Guardar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            loadRoleItems();
+            loadRoles();
+            loadItems();
+        });
+
+        function loadRoleItems() {
+            axios.get("http://localhost/inicio/apis/role_items.php")
+                .then(response => {
+                    let table = $('#roleItemsTable').DataTable();
+                    table.clear();
+                    response.data.forEach(roleItem => {
+                        table.row.add([
+                            roleItem.role,
+                            roleItem.item,
+                            `<button class="btn btn-sm btn-secondary btn-delete" 
+                                data-id="${roleItem.id}">Eliminar</button>`
+                        ]).draw();
+                    });
+                });
+        }
+
+        function loadRoles() {
+            axios.get("http://localhost/inicio/apis/roles.php")
+                .then(response => {
+                    let select = $("#roleSelect");
+                    select.empty();
+                    response.data.forEach(role => {
+                        select.append(`<option value="${role.id}">${role.nombre}</option>`);
+                    });
+                });
+        }
+
+        function loadItems() {
+            axios.get("http://localhost/inicio/apis/items.php")
+                .then(response => {
+                    let select = $("#itemSelect");
+                    select.empty();
+                    response.data.forEach(item => {
+                        select.append(`<option value="${item.id}">${item.nombre}</option>`);
+                    });
+                });
+        }
+
+        function openModal() {
+            $("#roleItemModal").modal("show");
+        }
+
+        function saveRoleItem() {
+            let role_id = $("#roleSelect").val();
+            let item_id = $("#itemSelect").val();
+
+            axios.post("http://localhost/inicio/apis/role_items.php?create", { role_id, item_id })
+                .then(() => {
+                    $("#roleItemModal").modal("hide");
+                    loadRoleItems();
+                });
+        }
+
+        $(document).on("click", ".btn-delete", function () {
+            let id = $(this).data("id");
+
+            if (confirm("¿Eliminar este permiso?")) {
+                axios.post("http://localhost/inicio/apis/role_items.php?delete", { id })
+                    .then(() => loadRoleItems());
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

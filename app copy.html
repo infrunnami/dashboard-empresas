@@ -103,14 +103,12 @@
             color: #fff;
             padding: 10px 0;
         }
-        
 
         .logout:hover {
             background: #666;
         }
-
         #empresaInfo {
-            color: #fff;
+            color:#fff;
         }
     </style>
 
@@ -121,21 +119,45 @@
     <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
     <div class="sidebar" id="sidebar">
-        <p><h3 id="empresas" style="color: #fff; text-align: center;">Empresa</h3></p>
-        <ul id="sidebar-items"></ul>
+
+        <div id="admin-menu">
+            <div class="container mt-3">
+                <h4 id="empresaInfo">Wit.la</h4>
+                <hr>
+            </div>
+            <a href="#" onclick="loadPage('roles.html')"><i class="fas fa-cog"></i> Configuración</a>
+            <a href="#" onclick="loadPage('users.html')"><i class="fas fa-users"></i> Users</a>
+            <a href="#" onclick="loadPage('empresas.html')"><i class="fas fa-industry"></i> Empresas</a>
+        </div>
         <a class="logout" href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
-   
 
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Mi App</a>
-            <img src="./wit.png" alt="Logo" style="height: 40px;">
+            <a class="navbar-brand" href="#">
+                <img src="./wit.png" alt="Logo" style="height: 10px;">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav" id="navbar-items"></ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="loadPage('nosotros.html')">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="loadPage('dashboard.html')">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="loadPage('contacto.html')">Contacto</a>
+                    </li>
+                    <li class="nav-item" id="menu1">
+                        <a class="nav-link" href="#" onclick="loadPage('menu1.html')">Menu1</a>
+                    </li>
+                    <li class="nav-item" id="menu2">
+                        <a class="nav-link" href="#" onclick="loadPage('menu2.html')">Menu2</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -146,7 +168,6 @@
     </div>
 
     <script>
-    
         function toggleSidebar() {
             let sidebar = document.getElementById("sidebar");
             let content = document.getElementById("content");
@@ -160,18 +181,18 @@
             }
         }
         function loadPage(page) {
-            $("#content").load(page, function () {
-                if (page === "users.html") {
-                    loadUsers(); // Llama a la función después de cargar users.html
-                }
-            });
-        }
-        function logout() {
-            axios.post("./apis/logout.php", {}, { withCredentials: true })
-                .then(() => {
-                    window.location.href = "login.html";
+                $("#content").load(page, function () {
+                    if (page === "users.html") {
+                        loadUsers(); // Llama a la función después de cargar users.html
+                    }
                 });
-        }
+            }
+            function logout() {
+        axios.post("./apis/logout.php", {}, { withCredentials: true })
+            .then(() => {
+                window.location.href = "login.html";
+            });
+    }
 
 
         $(document).ready(function () {
@@ -182,49 +203,43 @@
                     } else {
                         let rol_id = response.data.rol_id;
                         let empresa = response.data.empresa || "Sin empresa asignada";
-                       $("#empresas").text(empresa);
+                        $("#empresaInfo").text( empresa);
 
+
+                        //  if (localStorage.getItem("loggedIn") !== "true") {
+                        //      window.location.href = "login.html"; // Redirige si no está logueado
+                        //  }
+                        //  let userRole = localStorage.getItem("userRole");
+
+
+                        // Ocultar menú según el rol
+                        if (userRole === "user1") {
+                            $("#menu2").hide(); // User1 NO puede ver Menu2
+                        } else if (userRole === "user2") {
+                            $("#menu1").hide(); // User2 NO puede ver Menu1
+                        } else if (userRole === "admin") {
+                            // Admin puede ver todo (no se oculta nada)
+                        } else {
+                            // Si es otro usuario, oculta ambos menús
+                            $("#menu1").hide();
+                            $("#menu2").hide();
+                        }
+                        // Si el rol comienza con "user", oculta el menú de admin
+                        if (userRole && userRole.startsWith("user")) {
+                            $("#admin-menu").remove(); // Oculta todas las opciones excepto Logout
+                        }
                     }
                 });
-            
-                axios.get("http://localhost/inicio/apis/get_menu.php", { withCredentials: true })
-            .then(response => {
-                if (response.data.error) {
-                    window.location.href = "login.html"; // Redirigir si no está logueado
-                    return;
-                }
 
 
 
-                let navbar = $("#navbar-items");
-                let sidebar = $("#sidebar-items");
 
-                navbar.empty();
-                sidebar.empty();
 
-                response.data.navbar.forEach(item => {
-                    navbar.append(`<li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('${item.url}')">${item.nombre}</a></li>`);
-                });
 
-                response.data.sidebar.forEach(item => {
-                    sidebar.append(`<li><a href="#" onclick="loadPage('${item.url}')">${item.nombre}</a></li>`);
-                });
-            })
-            .catch(error => {
-                console.error("Error al obtener menús:", error);
-                window.location.href = "login.html";
-            });
+
             
 
-
-
-
-
-
-
-
-
-
+            
         })
     </script>
 
