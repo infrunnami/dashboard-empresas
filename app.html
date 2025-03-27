@@ -190,7 +190,8 @@
                 axios.get("http://localhost/inicio/apis/get_menu.php", { withCredentials: true })
             .then(response => {
                 if (response.data.error) {
-                    window.location.href = "login.html"; // Redirigir si no está logueado
+                    console.log(response.data.error);
+                    window.location.href = "./pages/login.html"; // Redirigir si no está logueado
                     return;
                 }
 
