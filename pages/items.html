@@ -70,7 +70,7 @@
         });
 
         function loadItems() {
-            axios.get("http://localhost/inicio/apis/items.php")
+            axios.get(config.urlBase+"items.php")
                 .then(response => {
                     let table = $('#itemsTable').DataTable();
                     table.clear();
@@ -114,7 +114,7 @@
             let id = $("#itemId").val();
             let item = { id: id, nombre: $("#nombre").val(), tipo: $("#tipo").val(), url: $("#url").val() };
 
-            let url = id ? "http://localhost/inicio/apis/items.php?update" : "http://localhost/inicio/apis/items.php?create";
+            let url = id ? config.urlBase+"items.php?update" : config.urlBase+"items.php?create";
             
             axios.post(url, item)
                 .then(() => {
@@ -127,7 +127,7 @@
             let id = $(this).data("id");
 
             if (confirm("¿Eliminar este ítem?")) {
-                axios.post("http://localhost/inicio/apis/items.php?delete", { id })
+                axios.post(config.urlBase+"items.php?delete", { id })
                     .then(() => loadItems());
             }
         });

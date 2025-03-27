@@ -59,7 +59,7 @@
         });
 
         function loadEmpresas() {
-            axios.get("http://localhost/inicio/apis/empresas.php")
+            axios.get(config.urlBase+"empresas.php")
                 .then(response => {
                     let table = $('#empresasTable').DataTable();
                     table.clear();
@@ -107,7 +107,7 @@
                 nombre: $("#nombre").val()
             };
 
-            let url = id ? "http://localhost/inicio/apis/empresas.php?update" : "http://localhost/inicio/apis/empresas.php?create";
+            let url = id ? config.urlBase+"empresas.php?update" : config.urlBase+"empresas.php?create";
             
             axios.post(url, empresa)
                 .then(() => {
@@ -120,7 +120,7 @@
             let id = $(this).data("id");
             let estado = $(this).is(":checked") ? 1 : 0;
 
-            axios.post("http://localhost/inicio/apis/empresas.php?toggle", { id, estado })
+            axios.post(config.urlBase+"empresas.php?toggle", { id, estado })
                 .then(() => loadEmpresas());
         });
     </script>

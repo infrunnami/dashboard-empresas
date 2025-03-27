@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Oscura</title>
@@ -12,6 +13,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="./config.js"></script>
     <style>
         body {
             background-color: #fff;
@@ -167,7 +169,7 @@
             });
         }
         function logout() {
-            axios.post("http://localhost/inicio/apis/logout.php", {}, { withCredentials: true })
+            axios.post(config.urlBase+"logout.php", {}, { withCredentials: true })
                 .then(() => {
                     window.location.href = "pages/login.html";
                 });
@@ -187,7 +189,7 @@
                     }
                 });
             
-                axios.get("http://localhost/inicio/apis/get_menu.php", { withCredentials: true })
+                axios.get(config.urlBase+"get_menu.php", { withCredentials: true })
             .then(response => {
                 if (response.data.error) {
                     console.log(response.data.error);

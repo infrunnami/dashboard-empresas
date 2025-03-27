@@ -92,7 +92,7 @@
         loadRoles();
 
         function loadEmpresas() {
-            axios.get("http://localhost/inicio/apis/listar_empresas.php").then(response => {
+            axios.get(config.urlBase+"listar_empresas.php").then(response => {
                 let select = $("#empresa");
                 select.empty();
                 response.data.forEach(emp => {
@@ -102,7 +102,7 @@
         }
 
         function loadRoles() {
-            axios.get("http://localhost/inicio/apis/roles.php").then(response => {
+            axios.get(config.urlBase+"roles.php").then(response => {
                 let select = $("#roles");
                 select.empty();
                 response.data.forEach(rol => {

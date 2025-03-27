@@ -63,7 +63,7 @@
         });
 
         function loadRoleItems() {
-            axios.get("http://localhost/inicio/apis/role_items.php")
+            axios.get(config.urlBase+"role_items.php")
                 .then(response => {
                     let table = $('#roleItemsTable').DataTable();
                     table.clear();
@@ -79,7 +79,7 @@
         }
 
         function loadRoles() {
-            axios.get("http://localhost/inicio/apis/roles.php")
+            axios.get(config.urlBase+"roles.php")
                 .then(response => {
                     let select = $("#roleSelect");
                     select.empty();
@@ -90,7 +90,7 @@
         }
 
         function loadItems() {
-            axios.get("http://localhost/inicio/apis/items.php")
+            axios.get(config.urlBase+"items.php")
                 .then(response => {
                     let select = $("#itemSelect");
                     select.empty();
@@ -108,7 +108,7 @@
             let role_id = $("#roleSelect").val();
             let item_id = $("#itemSelect").val();
 
-            axios.post("http://localhost/inicio/apis/role_items.php?create", { role_id, item_id })
+            axios.post(config.urlBase+"role_items.php?create", { role_id, item_id })
                 .then(() => {
                     $("#roleItemModal").modal("hide");
                     loadRoleItems();
@@ -119,7 +119,7 @@
             let id = $(this).data("id");
 
             if (confirm("¿Eliminar este permiso?")) {
-                axios.post("http://localhost/inicio/apis/role_items.php?delete", { id })
+                axios.post(config.urlBase+"role_items.php?delete", { id })
                     .then(() => loadRoleItems());
             }
         });

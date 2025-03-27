@@ -59,7 +59,7 @@
         });
 
         function loadRoles() {
-            axios.get("http://localhost/inicio/apis/roles.php")
+            axios.get(config.urlBase+"roles.php")
                 .then(response => {
                     let table = $('#rolesTable').DataTable();
                     table.clear();
@@ -104,7 +104,7 @@
             let id = $("#rolId").val();
             let rol = { id: id, nombre: $("#nombre").val() };
 
-            let url = id ? "http://localhost/inicio/apis/roles.php?update" : "http://localhost/inicio/apis/roles.php?create";
+            let url = id ? config.urlBase+"roles.php?update" : config.urlBase+"roles.php?create";
             
             axios.post(url, rol)
                 .then(() => {
@@ -117,7 +117,7 @@
             let id = $(this).data("id");
             let estado = $(this).is(":checked") ? 1 : 0;
 
-            axios.post("http://localhost/inicio/apis/roles.php?toggle", { id, estado })
+            axios.post(config.urlBase+"roles.php?toggle", { id, estado })
                 .then(() => loadRoles());
         });
     </script>
