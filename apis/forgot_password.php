@@ -6,7 +6,6 @@ require '../vendor/autoload.php';
 
 header("Content-Type: application/json");
 
-//$conn = new mysqli("localhost", "root", "", "miapp");
 include './conexion.php';
 
 $data = json_decode(file_get_contents("php://input"));

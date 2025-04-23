@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 session_start();
 header("Content-Type: application/json");
 
-$conn = new mysqli("localhost", "root", "", "miapp");
+include './conexion.php';
 
 if ($conn->connect_error) {
     die(json_encode(["error" => "Error de conexión a la base de datos"]));

@@ -1,0 +1,113 @@
+@import url("base.css");
+
+/* Ajustes generales */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+.btn-dark {
+    background: var(--primary-color);
+}
+
+.btn-dark:hover {
+    background: var(--dark-color);
+}
+
+/* Tablas */
+table.dataTable {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border-color: var(--primary-color);
+}
+
+table.dataTable thead {
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
+}
+
+table.dataTable tbody tr {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+table.dataTable tbody tr:hover {
+  background-color: var(--secondary-color);
+  color: var(--button-text-color);
+}
+
+/* Botones de DataTables */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  background-color: var(--secondary-color);
+  color: var(--button-text-color) !important;
+  border: none;
+  padding: 5px 10px;
+  margin: 2px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background-color: var(--primary-color);
+  color: var(--button-text-color) !important;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--primary-color);
+}
+
+.dataTables_wrapper .dataTables_info {
+  color: var(--text-color);
+}
+
+/* Modal */
+.modal-content {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--primary-color);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--primary-color);
+}
+
+.btn-close {
+  filter: invert(1);
+}
+
+/* Form */
+.form-control,
+.form-select {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--primary-color);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.25rem rgba(78, 205, 196, 0.25);
+}
+
+/* Switch */
+.form-switch .form-check-input {
+  cursor: pointer;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.form-switch .form-check-input:checked {
+  background-color: var(--primary-color);
+}
+
+/* Botón editar que ya tenés */
+.btn-edit {
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
+  border: none;
+}
+
+.btn-edit:hover {
+  background-color: var(--dark-color);
+}

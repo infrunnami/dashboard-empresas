@@ -1,0 +1,146 @@
+:root {
+  --primary-color: #2656bf;
+  --dark-color: #082d7c;
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --secondary-color: #4287d6;
+  --accent-color: #4ecdc4;
+  --button-text-color: #ffffff;
+}
+
+.light-theme {
+  --primary-color: #2656bf;
+  --dark-color: #082d7c;
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --secondary-color: #4287d6;
+  --accent-color: #4ecdc4;
+  --button-text-color: #ffffff;
+}
+
+.dark-theme {
+  --primary-color: #10a37f;
+  --background-color: #202123;
+  --dark-color: #161616;
+  --text-color: #d1d5db;
+  --secondary-color: #2d2f31;
+  --accent-color: #2e7dd7;
+  --button-text-color: #ffffff;
+}
+
+.blue-theme {
+  --primary-color: #1e6091;
+  --background-color: #e0f4ff;
+  --text-color: #022b3a;
+  --secondary-color: #a9d6e5;
+  --accent-color: #38bdf8;
+  --button-text-color: #ffffff;
+  --dark-color: #003049;
+}
+
+.green-theme {
+  --primary-color: #2e8b57;
+  --background-color: #add8a3;
+  --text-color: #1c3b2f;
+  --secondary-color: #c1e1c1;
+  --accent-color: #4caf50;
+  --button-text-color: #ffffff;
+  --dark-color: #1b4332;
+}
+
+body.preload-theme {
+  visibility: hidden;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.btn {
+  background: var(--secondary-color);
+  color: var(--button-text-color);
+  border: none;
+}
+
+.btn:hover {
+  background: var(--primary-color);
+}
+
+.btn-dark {
+  background: var(--dark-color);
+}
+
+.btn-dark:hover {
+  background: var(--primary-color);
+}
+
+.btn-edit {
+  background: var(--primary-color);
+  color: var(--button-text-color);
+}
+
+.btn-edit:hover {
+  background: var(--dark-color);
+  color: var(--button-text-color);
+}
+
+.form-check-input:hover {
+  background-color: var(--dark-color);
+}
+
+/* === Sobrescritura de Bootstrap con variables del tema === */
+
+.bg-light {
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+}
+
+.bg-dark {
+  background-color: var(--dark-color) !important;
+  color: var(--button-text-color) !important;
+}
+
+.text-dark {
+  color: var(--text-color) !important;
+}
+
+.text-light {
+  color: var(--button-text-color) !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--button-text-color) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--dark-color) !important;
+  border-color: var(--dark-color) !important;
+  color: var(--button-text-color) !important;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+  color: var(--button-text-color) !important;
+}
+
+.btn-secondary:hover {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.navbar-dark {
+  background-color: var(--primary-color) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: var(--button-text-color) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: var(--accent-color) !important;
+}

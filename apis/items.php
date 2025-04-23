@@ -1,17 +1,36 @@
 <?php
+
+session_start();
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-$conn = new mysqli("localhost", "root", "", "miapp");
+include './conexion.php';
 
 if ($conn->connect_error) {
     die(json_encode(["error" => "Error de conexión a la base de datos"]));
 }
 
+
+$user_id = intval($_SESSION["user_id"] ?? 0);
+
+$rol_nombre = '';
+$qryRol = "SELECT r.nombre FROM users u INNER JOIN roles r ON u.rol_id = r.id WHERE u.id = $user_id";
+$resRol = $conn->query($qryRol);
+
+if ($resRol && $resRol->num_rows > 0) {
+    $rowRol = $resRol->fetch_assoc();
+    $rol_nombre = $rowRol["nombre"];
+}
+
 // Obtener todos los ítems
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    $result = $conn->query("SELECT * FROM items");
+    if ($rol_nombre === 'SuperAdmin') {
+        $result = $conn->query("SELECT * FROM items ORDER BY id ASC");
+    } else {
+        $result = $conn->query("SELECT * FROM items WHERE id >= 9 ORDER BY id ASC");
+    }
+
     echo json_encode($result->fetch_all(MYSQLI_ASSOC));
 }
 

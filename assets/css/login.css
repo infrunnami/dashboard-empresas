@@ -1,0 +1,35 @@
+
+body {
+    background-color: #161616;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.login-box {
+    background: #333;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    width: 300px;
+}
+.form-control {
+    margin-bottom: 15px;
+}
+.btn-custom {
+    background-color: #444;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    width: 100%;
+    border: none;
+    transition: background 0.3s;
+}
+.btn-custom:hover {
+    background-color: #666;
+}
+
+h2{
+    color: #fff !important;
+}

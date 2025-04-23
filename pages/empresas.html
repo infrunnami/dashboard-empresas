@@ -3,14 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrar Empresas</title>
-
-    <style>
-        body { background-color: #fff; color: #333; }
-        .btn { background: #666; color: white; border: none; }
-        .btn:hover { background: #444; }
-        .form-switch .form-check-input { cursor: pointer; }
-    </style>
+    <title>Empresas</title>
+    <link rel="stylesheet" href="assets/css/empresas.css">
 </head>
 <body>
     <div class="container mt-4">
@@ -44,86 +38,20 @@
                         <label>Nombre</label>
                         <input type="text" class="form-control" id="nombre">
                     </div>
+                    <div class="mb-3">
+                        <label for="tema">Tema</label>
+                        <select id="tema" class="form-select"></select>
+                      </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-dark" onclick="saveEmpresa()">Guardar</button>
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-secondary" onclick="saveEmpresa()">Guardar</button>
+                    <button class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        $(document).ready(function () {
-            loadEmpresas();
-        });
-
-        function loadEmpresas() {
-            axios.get(config.urlBase+"empresas.php")
-                .then(response => {
-                    let table = $('#empresasTable').DataTable();
-                    table.clear();
-                    response.data.forEach(emp => {
-                        let estadoTexto = emp.estado == 1 ? "Activo" : "Inactivo";
-                        let switchButton = `
-                            <div class="form-check form-switch">
-                                <input class="form-check-input toggle-estado" type="checkbox" 
-                                    data-id="${emp.id}" ${emp.estado == 1 ? "checked" : ""}>
-                            </div>
-                        `;
-                        table.row.add([
-                            emp.id,
-                            emp.nombre,
-                            estadoTexto,
-                            `<div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-sm btn-dark btn-edit me-2" 
-                                data-id="${emp.id}" 
-                                data-nombre="${emp.nombre}">Editar</button>
-                            ${switchButton}
-                        </div>`
-                        ]).draw();
-                    });
-                });
-        }
-
-        $(document).on("click", ".btn-edit", function () {
-            let id = $(this).data("id");
-            let nombre = $(this).data("nombre");
-            openModal(id, nombre);
-        });
-
-        function openModal(id = null, nombre = "") {
-            $("#empresaId").val(id || "");
-            $("#nombre").val(nombre);
-
-            let empresaModal = new bootstrap.Modal(document.getElementById("empresaModal"));
-            empresaModal.show();
-        }
-
-        function saveEmpresa() {
-            let id = $("#empresaId").val();
-            let empresa = {
-                id: id,
-                nombre: $("#nombre").val()
-            };
-
-            let url = id ? config.urlBase+"empresas.php?update" : config.urlBase+"empresas.php?create";
-            
-            axios.post(url, empresa)
-                .then(() => {
-                    $("#empresaModal").modal("hide");
-                    loadEmpresas();
-                });
-        }
-
-        $(document).on("change", ".toggle-estado", function () {
-            let id = $(this).data("id");
-            let estado = $(this).is(":checked") ? 1 : 0;
-
-            axios.post(config.urlBase+"empresas.php?toggle", { id, estado })
-                .then(() => loadEmpresas());
-        });
-    </script>
+    <script src="assets/js/empresas.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

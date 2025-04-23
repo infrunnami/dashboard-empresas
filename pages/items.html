@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrar Ítems</title>
-  
-    <style>
-        body { background-color: #fff; color: #333; }
-        .btn { background: #666; color: white; border: none; }
-        .btn:hover { background: #444; }
-    </style>
+    <title>Items</title>
+    <link rel="stylesheet" href="assets/css/items.css">
 </head>
 <body>
     <div class="container mt-4">
@@ -57,81 +52,14 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-dark" onclick="saveItem()">Guardar</button>
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-secondary" onclick="saveItem()">Guardar</button>
+                    <button class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        $(document).ready(function () {
-            loadItems();
-        });
-
-        function loadItems() {
-            axios.get(config.urlBase+"items.php")
-                .then(response => {
-                    let table = $('#itemsTable').DataTable();
-                    table.clear();
-                    response.data.forEach(item => {
-                        table.row.add([
-                            item.id,
-                            item.nombre,
-                            item.tipo,
-                            item.url,
-                            `<button class="btn btn-sm btn-dark btn-edit" 
-                                data-id="${item.id}" 
-                                data-nombre="${item.nombre}" 
-                                data-tipo="${item.tipo}" 
-                                data-url="${item.url}">Editar</button>
-                             <button class="btn btn-sm btn-secondary btn-delete" 
-                                data-id="${item.id}">Eliminar</button>`
-                        ]).draw();
-                    });
-                });
-        }
-
-        $(document).on("click", ".btn-edit", function () {
-            let id = $(this).data("id");
-            let nombre = $(this).data("nombre");
-            let tipo = $(this).data("tipo");
-            let url = $(this).data("url");
-            openModal(id, nombre, tipo, url);
-        });
-
-        function openModal(id = null, nombre = "", tipo = "navbar", url = "") {
-            $("#itemId").val(id || "");
-            $("#nombre").val(nombre);
-            $("#tipo").val(tipo);
-            $("#url").val(url);
-
-            let itemModal = new bootstrap.Modal(document.getElementById("itemModal"));
-            itemModal.show();
-        }
-
-        function saveItem() {
-            let id = $("#itemId").val();
-            let item = { id: id, nombre: $("#nombre").val(), tipo: $("#tipo").val(), url: $("#url").val() };
-
-            let url = id ? config.urlBase+"items.php?update" : config.urlBase+"items.php?create";
-            
-            axios.post(url, item)
-                .then(() => {
-                    $("#itemModal").modal("hide");
-                    loadItems();
-                });
-        }
-
-        $(document).on("click", ".btn-delete", function () {
-            let id = $(this).data("id");
-
-            if (confirm("¿Eliminar este ítem?")) {
-                axios.post(config.urlBase+"items.php?delete", { id })
-                    .then(() => loadItems());
-            }
-        });
-    </script>
+    <script src="assets/js/items.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -1,3 +1,3 @@
 const config = {
-    urlBase: "http://localhost/inicio/apis/"
+    urlBase: "http://localhost/dashboard-html/apis/"
 };

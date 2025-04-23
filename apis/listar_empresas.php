@@ -8,7 +8,7 @@ header("Content-Type: application/json");
 $empresa_id = intval($_SESSION["empresa_id"]);
 $role = $_SESSION["rol"];
 
-$conn = new mysqli("localhost", "root", "", "miapp");
+include './conexion.php';
 
 if ($conn->connect_error) {
     die(json_encode(["error" => "Error de conexión a la base de datos"]));
@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 
 // Obtener todas las empresas
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    if ($role == "SuperUser"){
+    if ($role == "SuperAdmin"){
         $result = $conn->query("SELECT id, nombre FROM empresas ");
         echo json_encode($result->fetch_all(MYSQLI_ASSOC));
 

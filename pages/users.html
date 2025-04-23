@@ -1,27 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrar Usuarios</title>
-
-    <style>
-        body {
-            background-color: #fff;
-            color: #333;
-        }
-
-        .btn {
-            background: #666;
-            color: white;
-            border: none;
-        }
-
-        .btn:hover {
-            background: #444;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/users.css">
 </head>
 
 <body>
@@ -87,93 +70,7 @@
         </div>
     </div>
 
-    <script>
-        loadEmpresas();
-        loadRoles();
-
-        function loadEmpresas() {
-            axios.get(config.urlBase+"listar_empresas.php").then(response => {
-                let select = $("#empresa");
-                select.empty();
-                response.data.forEach(emp => {
-                    select.append(`<option value="${emp.id}">${emp.nombre}</option>`);
-                });
-            });
-        }
-
-        function loadRoles() {
-            axios.get(config.urlBase+"roles.php").then(response => {
-                let select = $("#roles");
-                select.empty();
-                response.data.forEach(rol => {
-                    select.append(`<option value="${rol.id}">${rol.nombre}</option>`);
-                });
-            });
-        }
-
-
-        function loadUsers() {
-            axios.get("./apis/users.php")
-                .then(response => {
-                    let table = $('#usersTable').DataTable();
-                    table.clear();
-                    response.data.forEach(user => {
-                        table.row.add([
-                            user.id,
-                            user.username,
-                            user.email,
-                            user.rol,
-                            user.empresa,
-                            `<button class="btn btn-sm btn-dark" onclick="openModal(${user.id}, '${user.username}', '${user.email}',${user.empresa_id},${user.rol_id})">Editar</button>
-                     <button class="btn btn-sm btn-secondary" onclick="deleteUser(${user.id})">Eliminar</button>`
-                        ]).draw();
-
-                        console.log (user.rol)
-                    });
-                });
-        }
-
-        function openModal(id = null, username = "", email = "", empresa_id="", role_id="") {
-            $("#userId").val(id || "");
-            $("#username").val(username);
-            $('#email').val(email);
-            $("#roles").val(role_id);
-
-            // Asegúrate de que empresa_id sea un número antes de asignarlo al select
-            $("#empresa").val(parseInt(empresa_id));
-            $("#password").val("");
-            $("#userModal").modal("show");
-
-            console.log(empresa_id);
-        }
-
-        function saveUser() {
-            let id = $("#userId").val();
-            let user = {
-                id: id,
-                username: $("#username").val(),
-                password: $("#password").val(),
-                role_id: $("#roles").val(),
-                email: $('#email').val(),
-                empresa_id: $('#empresa').val()
-            };
-
-            let url = id ? "./apis/users.php?update" : "./apis/users.php?create";
-
-            axios.post(url, user)
-                .then(() => {
-                    $("#userModal").modal("hide");
-                    loadUsers();
-                });
-        }
-
-        function deleteUser(id) {
-            if (confirm("¿Eliminar este usuario?")) {
-                axios.post("./apis/users.php?delete", { id })
-                    .then(() => loadUsers());
-            }
-        }
-    </script>
+    <script src="assets/js/users.js""></script>
 
 
 </body>

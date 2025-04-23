@@ -1,0 +1,107 @@
+@import url("base.css");
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+}
+
+.navbar {
+    background-color: var(--primary-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding-left: 60px;
+}
+
+.navbar-brand {
+    margin-left: 60px;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+.nav-link {
+    color: var(--button-text-color);
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #fff !important;
+}
+
+#content {
+    padding: 80px 20px 20px 270px;
+    flex-grow: 1;
+    transition: padding-left 0.3s;
+    width: 100%;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: -250px;
+    top: 56px;
+    background: var(--dark-color);
+    padding-top: 20px;
+    transition: left 0.3s;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: var(--button-text-color);
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.sidebar a:hover {
+    background: var(--primary-color);
+}
+
+.sidebar i {
+    margin-right: 10px;
+}
+
+.menu-btn {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    background: var(--primary-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    z-index: 1100;
+}
+#navbar-items,
+#sidebar-items {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+
+.logout {
+    position: absolute;
+    bottom: 100px;
+    width: 100%;
+    text-align: center;
+
+    color: var(--button-text-color);
+    padding: 10px 0;
+}
+
+
+.logout:hover {
+    background: var(--primary-color);
+}
+
+#empresaInfo {
+    color: #fff;
+}
