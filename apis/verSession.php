@@ -35,6 +35,7 @@ if ($result && $result->num_rows > 0) {
     echo json_encode([
         "rol" => $rol,
         "id_usuario" => $usuario_id,
+        "empresa_id" => $_SESSION["empresa_id"] ?? null,
         "tema_nombre" => !empty($data['tema_nombre']) ? $data['tema_nombre'] : 'light'
     ]);
 } else {

@@ -21,15 +21,15 @@ function loadRoleItems() {
 }
 
 function loadRoles() {
-  axios.get(config.urlBase+"roles.php")
-      .then(response => {
-          let select = $("#roleSelect");
-          select.empty();
-          response.data.forEach(role => {
-              select.append(`<option value="${role.id}">${role.nombre}</option>`);
-          });
-      });
-}
+    axios.get(config.urlBase+"roles.php")
+        .then(response => {
+            let select = $("#roleSelect");
+            select.empty();
+            response.data.forEach(role => {
+                select.append(`<option value="${role.id}">${role.nombre}</option>`);
+            });
+        });
+  }
 
 function loadItems() {
   axios.get(config.urlBase+"items.php")

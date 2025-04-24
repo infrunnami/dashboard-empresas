@@ -26,13 +26,16 @@ CREATE TABLE empresas (
   CONSTRAINT fk_tema FOREIGN KEY (tema_id) REFERENCES temas (id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- TABLA: items 
+-- TABLA: items (con creador por empresa)
 CREATE TABLE items (
   id INT(11) NOT NULL AUTO_INCREMENT,
   nombre VARCHAR(100) NOT NULL,
   tipo ENUM('navbar', 'sidebar') NOT NULL,
   url VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id)
+  creado_por_empresa_id INT(11) DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY fk_creador_empresa (creado_por_empresa_id),
+  CONSTRAINT fk_creador_empresa FOREIGN KEY (creado_por_empresa_id) REFERENCES empresas(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- TABLA: roles
@@ -54,7 +57,7 @@ CREATE TABLE role_items (
   KEY item_id (item_id),
   CONSTRAINT role_items_ibfk_1 FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
   CONSTRAINT role_items_ibfk_2 FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE,
-  UNIQUE KEY unique_role_item (role_id, item_id) -- Evita duplicados
+  UNIQUE KEY unique_role_item (role_id, item_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- TABLA: users
@@ -96,19 +99,18 @@ VALUES
 (3, 'SubAdminEmpresa', 1),
 (4, 'UsuarioComun', 1);
 
--- items
-INSERT INTO items (id, nombre, tipo, url) VALUES 
-(1, 'Configuración', 'navbar', 'configuracion.html'),
-(2, 'Contacto', 'navbar', 'contacto.html'),
-(3, 'Nosotros', 'navbar', 'nosotros.html'),
-(4, 'Empresas', 'sidebar', 'empresas.html'),
-(5, 'Items', 'sidebar', 'items.html'),
-(6, 'Role Items', 'sidebar', 'role_items.html'),
-(7, 'Roles', 'sidebar', 'roles.html'),
-(8, 'Users', 'sidebar', 'users.html');
+-- ITEMS GLOBALES
+INSERT INTO items (id, nombre, tipo, url, creado_por_empresa_id) VALUES 
+(1, 'Configuración', 'navbar', 'configuracion.html', 1),
+(2, 'Contacto', 'navbar', 'contacto.html', 1),
+(3, 'Nosotros', 'navbar', 'nosotros.html', 1),
+(4, 'Empresas', 'sidebar', 'empresas.html', 1),
+(5, 'Items', 'sidebar', 'items.html', 1),
+(6, 'Role Items', 'sidebar', 'role_items.html', 1),
+(7, 'Roles', 'sidebar', 'roles.html', 1),
+(8, 'Users', 'sidebar', 'users.html', 1);
 
-
--- ROLES
+-- RELACIÓN ROLES → ÍTEMS
 -- SuperAdmin (acceso total)
 INSERT INTO role_items (role_id, item_id) VALUES
 (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8);
@@ -121,56 +123,32 @@ INSERT INTO role_items (role_id, item_id) VALUES
 INSERT INTO role_items (role_id, item_id) VALUES
 (3, 1), (3, 2), (3, 3), (3, 8);
 
--- Usuario (solo navbar)
+-- UsuarioComun (navbar)
 INSERT INTO role_items (role_id, item_id) VALUES
 (4, 3);
 
-
 -- USUARIOS DE PRUEBA
--- SuperAdmin sin empresa asignada (puede ver todos)
+-- SuperAdmin
 INSERT INTO users (id, username, password, email, rol_id, empresa_id)
 VALUES (1, 'SuperUser', MD5('1234'), 'superuser@wit.la', 1, 1);
 
-
 -- EMPRESA 1
--- AdminEmpresa
 INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (2, 'Admin1_E1', MD5('1234'), 'admin1@empresa1.com', 2, 2);
-
--- SubAdminEmpresa
-INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (3, 'SubAdmin1_E1', MD5('1234'), 'subadmin1@empresa1.com', 3, 2);
-
--- UsuarioComun
-INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (4, 'User1_E1', MD5('1234'), 'user1@empresa1.com', 4, 2);
-
+VALUES 
+(2, 'Admin1_E1', MD5('1234'), 'admin1@empresa1.com', 2, 2),
+(3, 'SubAdmin1_E1', MD5('1234'), 'subadmin1@empresa1.com', 3, 2),
+(4, 'User1_E1', MD5('1234'), 'user1@empresa1.com', 4, 2);
 
 -- EMPRESA 2
--- AdminEmpresa
 INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (5, 'Admin1_E2', MD5('1234'), 'admin1@empresa2.com', 2, 3);
-
--- SubAdminEmpresa
-INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (6, 'SubAdmin1_E2', MD5('1234'), 'subadmin1@empresa2.com', 3, 3);
-
--- UsuarioComun
-INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (7, 'User1_E2', MD5('1234'), 'user1@empresa2.com', 4, 3);
-
+VALUES 
+(5, 'Admin1_E2', MD5('1234'), 'admin1@empresa2.com', 2, 3),
+(6, 'SubAdmin1_E2', MD5('1234'), 'subadmin1@empresa2.com', 3, 3),
+(7, 'User1_E2', MD5('1234'), 'user1@empresa2.com', 4, 3);
 
 -- EMPRESA 3
--- AdminEmpresa
 INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (8, 'Admin1_E3', MD5('1234'), 'admin1@empresa3.com', 2, 4);
-
--- SubAdminEmpresa
-INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (9, 'SubAdmin1_E3', MD5('1234'), 'subadmin1@empresa3.com', 3, 4);
-
--- UsuarioComun
-INSERT INTO users (id, username, password, email, rol_id, empresa_id)
-VALUES (10, 'User1_E3', MD5('1234'), 'user1@empresa3.com', 4, 4);
-
-
+VALUES 
+(8, 'Admin1_E3', MD5('1234'), 'admin1@empresa3.com', 2, 4),
+(9, 'SubAdmin1_E3', MD5('1234'), 'subadmin1@empresa3.com', 3, 4),
+(10, 'User1_E3', MD5('1234'), 'user1@empresa3.com', 4, 4);

@@ -13,6 +13,7 @@ if ($conn->connect_error) {
 
 
 $user_id = intval($_SESSION["user_id"] ?? 0);
+$empresa_id = intval($_SESSION["empresa_id"] ?? 0); // 🔧 AÑADIDO
 
 $rol_nombre = '';
 $qryRol = "SELECT r.nombre FROM users u INNER JOIN roles r ON u.rol_id = r.id WHERE u.id = $user_id";
@@ -23,16 +24,28 @@ if ($resRol && $resRol->num_rows > 0) {
     $rol_nombre = $rowRol["nombre"];
 }
 
-// Obtener todos los ítems
+// Obtener ítems disponibles según el rol y empresa
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
     if ($rol_nombre === 'SuperAdmin') {
-        $result = $conn->query("SELECT * FROM items ORDER BY id ASC");
+        $qry = "SELECT * FROM items ORDER BY id ASC";
     } else {
-        $result = $conn->query("SELECT * FROM items WHERE id >= 9 ORDER BY id ASC");
+        $qry = "
+            SELECT *
+            FROM items
+            WHERE creado_por_empresa_id = $empresa_id
+            ORDER BY id ASC
+        ";
     }
 
-    echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+    $result = $conn->query($qry);
+
+    if ($result) {
+        echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+    } else {
+        echo json_encode([]);
+    }
 }
+
 
 // Agregar ítem
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["create"])) {
@@ -41,7 +54,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["create"])) {
     $tipo = $conn->real_escape_string($data->tipo);
     $url = $conn->real_escape_string($data->url);
 
-    $conn->query("INSERT INTO items (nombre, tipo, url) VALUES ('$nombre', '$tipo', '$url')");
+    $creador_empresa_id = ($rol_nombre === 'SuperAdmin' && isset($data->empresa_id))
+        ? intval($data->empresa_id)
+        : $empresa_id;
+
+    $conn->query("INSERT INTO items (nombre, tipo, url, creado_por_empresa_id) 
+                  VALUES ('$nombre', '$tipo', '$url', $creador_empresa_id)");
+
     echo json_encode(["message" => "Ítem agregado"]);
 }
 
