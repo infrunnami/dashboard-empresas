@@ -30,10 +30,11 @@ function toggleSidebar() {
 }
 
 function loadPage(page) {
-    $("#content").load('./pages/'+page, function () {
+    $("#content").load("pages/" + page, function () {
         if (page === "users.html") {
-            loadUsers(); // Llama a la función después de cargar users.html
+            loadUsers();
         }
+        // Si necesitas funciones específicas para otras páginas, las agregas aquí
     });
 }
 function logout() {

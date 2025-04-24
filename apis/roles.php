@@ -17,26 +17,31 @@ $rol = $_SESSION["rol"] ?? "";
 // Obtener todos los roles
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
     if ($rol === "SuperAdmin") {
-        $sql = "SELECT * FROM roles WHERE nombre <> 'SuperUser'";
+        $qry_roles = "SELECT * FROM roles WHERE nombre <> 'SuperAdmin'";
     } else {
-        $sql = "
-            SELECT DISTINCT r.id, r.nombre
-            FROM roles r
-            JOIN users u ON u.rol_id = r.id
-            WHERE u.empresa_id = $empresa_id AND r.nombre <> 'SuperUser'
-        ";
+        $qry_roles = "
+            SELECT r.id, r.nombre, r.estado
+                FROM roles r
+                WHERE (r.empresa_id = $empresa_id OR r.empresa_id = 1)
+                AND r.nombre <> 'SuperAdmin'
+                AND r.nombre <> 'AdminEmpresa'
+                AND r.nombre <> 'SubAdminEmpresa'
+                AND r.nombre <> 'UsuarioComun'
+    ";
     }
 
-    $result = $conn->query($sql);
+    $result = $conn->query($qry_roles);
     echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+    exit;
 }
 
 // Agregar rol
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["create"])) {
     $data = json_decode(file_get_contents("php://input"));
     $nombre = $conn->real_escape_string($data->nombre);
+    $empresa_id = intval($_SESSION["empresa_id"] ?? null);
 
-    $conn->query("INSERT INTO roles (nombre, estado) VALUES ('$nombre', 1)");
+    $conn->query("INSERT INTO roles (nombre, estado, empresa_id) VALUES ('$nombre', 1, $empresa_id)");
     echo json_encode(["message" => "Rol agregado"]);
 }
 

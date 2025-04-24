@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS empresas;
 DROP TABLE IF EXISTS temas;
 
--- TABLA temas
+-- TABLA: temas
 CREATE TABLE temas (
   id INT(11) NOT NULL AUTO_INCREMENT,
   nombre VARCHAR(50) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE empresas (
   CONSTRAINT fk_tema FOREIGN KEY (tema_id) REFERENCES temas (id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- TABLA: items (con creador por empresa)
+-- TABLA: items
 CREATE TABLE items (
   id INT(11) NOT NULL AUTO_INCREMENT,
   nombre VARCHAR(100) NOT NULL,
@@ -43,11 +43,14 @@ CREATE TABLE roles (
   id INT(11) NOT NULL AUTO_INCREMENT,
   nombre VARCHAR(50) NOT NULL,
   estado INT(11) DEFAULT 1,
+  empresa_id INT(11) DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY nombre (nombre)
+  UNIQUE KEY nombre (nombre),
+  KEY fk_rol_empresa (empresa_id),
+  CONSTRAINT fk_rol_empresa FOREIGN KEY (empresa_id) REFERENCES empresas (id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- TABLA: role_items (relación muchos a muchos entre roles e ítems)
+-- TABLA: role_items
 CREATE TABLE role_items (
   id INT(11) NOT NULL AUTO_INCREMENT,
   role_id INT(11) NOT NULL,
@@ -91,44 +94,39 @@ VALUES
 (3, 'Empresa 2', 1, 3),
 (4, 'Empresa 3', 1, 4);
 
--- ROLES
-INSERT INTO roles (id, nombre, estado) 
+-- ROLES (asignados a la empresa ADMIN - id 1)
+INSERT INTO roles (id, nombre, estado, empresa_id) 
 VALUES 
-(1, 'SuperAdmin', 1),
-(2, 'AdminEmpresa', 1),
-(3, 'SubAdminEmpresa', 1),
-(4, 'UsuarioComun', 1);
+(1, 'SuperAdmin', 1, 1),
+(2, 'AdminEmpresa', 1, 1),
+(3, 'SubAdminEmpresa', 1, 1),
+(4, 'UsuarioComun', 1, 1);
 
--- ITEMS GLOBALES
+-- ITEMS (creados por empresa ADMIN)
 INSERT INTO items (id, nombre, tipo, url, creado_por_empresa_id) VALUES 
 (1, 'Configuración', 'navbar', 'configuracion.html', 1),
 (2, 'Contacto', 'navbar', 'contacto.html', 1),
 (3, 'Nosotros', 'navbar', 'nosotros.html', 1),
 (4, 'Empresas', 'sidebar', 'empresas.html', 1),
 (5, 'Items', 'sidebar', 'items.html', 1),
-(6, 'Role Items', 'sidebar', 'role_items.html', 1),
-(7, 'Roles', 'sidebar', 'roles.html', 1),
+(6, 'Roles', 'sidebar', 'roles.html', 1),
+(7, 'Permisos', 'sidebar', 'role_items.html', 1),
 (8, 'Users', 'sidebar', 'users.html', 1);
 
--- RELACIÓN ROLES → ÍTEMS
--- SuperAdmin (acceso total)
+-- PERMISOS: role_items
 INSERT INTO role_items (role_id, item_id) VALUES
-(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8);
-
--- AdminEmpresa (limitado)
-INSERT INTO role_items (role_id, item_id) VALUES
-(2, 1), (2, 2), (2, 3), (2, 5), (2, 8);
-
--- SubAdminEmpresa (más limitado)
-INSERT INTO role_items (role_id, item_id) VALUES
-(3, 1), (3, 2), (3, 3), (3, 8);
-
--- UsuarioComun (navbar)
-INSERT INTO role_items (role_id, item_id) VALUES
-(4, 3);
+-- SuperAdmin
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8),
+-- AdminEmpresa
+(2, 1), (2, 2), (2, 3), (2, 5), (2, 6), (2, 7), (2, 8),
+-- SubAdminEmpresa
+(3, 1), (3, 2), (3, 3), (3, 6), (3, 8),
+-- UsuarioComun
+(4, 1), (4, 2), (4, 3);
 
 -- USUARIOS DE PRUEBA
--- SuperAdmin
+
+-- SuperAdmin (ADMIN)
 INSERT INTO users (id, username, password, email, rol_id, empresa_id)
 VALUES (1, 'SuperUser', MD5('1234'), 'superuser@wit.la', 1, 1);
 
