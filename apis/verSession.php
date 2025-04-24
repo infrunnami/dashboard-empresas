@@ -34,7 +34,7 @@ if ($result && $result->num_rows > 0) {
     $data = $result->fetch_assoc();
     echo json_encode([
         "rol" => $rol,
-        "id_usuario" => $user_id,
+        "id_usuario" => $usuario_id,
         "tema_nombre" => !empty($data['tema_nombre']) ? $data['tema_nombre'] : 'light'
     ]);
 } else {
