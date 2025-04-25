@@ -1,0 +1,454 @@
+/* styles.css para página hija - Versión arreglada para integración */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.banos-wrapepr {
+  font-family: Arial, sans-serif;
+  color: #2699fb;
+  background: #f1f9ff;
+  padding: 20px;
+  width: 100%;
+  min-height: 100%;
+}
+
+.banos-wrapepr nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 104px;
+  background: #bce0fd;
+  margin-bottom: 20px;
+}
+
+.banos-wrapepr nav h1 {
+  font: normal normal bold 36px/42px Arial;
+  margin: 0;
+}
+
+.banos-wrapepr h2 {
+  text-align: center;
+  font: normal normal bold 28px/32px Arial;
+  letter-spacing: 0px;
+  color: #2699fb;
+  margin-bottom: 1.5rem;
+}
+
+.banos-wrapepr h3 {
+  font: normal normal bold 28px/32px Arial;
+  text-align: center;
+}
+
+.banos-wrapepr .logo-pullman {
+  width: 192px;
+  height: 55px;
+}
+
+.banos-wrapepr .logo-wit {
+  width: 102px;
+  height: 36px;
+}
+
+.banos-wrapepr #codigo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.banos-wrapepr .codigo-input {
+  width: 248px;
+  height: 48px;
+  border-radius: 24px;
+  box-shadow: inset 1px 4px 2px #00000029;
+  border: 1px solid #ff5600;
+  border-radius: 30px;
+  padding-left: 44px;
+  color: #2599fb;
+  font-size: 13px;
+}
+
+.banos-wrapepr .codigo-input-container {
+  position: relative;
+  display: inline-block;
+}
+
+.banos-wrapepr .input-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  pointer-events: none;
+}
+
+.banos-wrapepr .codigo-input:focus {
+  outline-color: #ff5600;
+}
+
+.banos-wrapepr .codigo-input::placeholder {
+  color: #2699fb;
+  font: normal normal normal 13px Arial;
+}
+
+.banos-wrapepr .sm-button {
+  background: #ff5600 0% 0% no-repeat padding-box;
+  width: 214px;
+  height: 43px;
+  box-shadow: inset 0px 3px 6px #ffffff;
+  border-radius: 24px;
+  border-color: #ff5600;
+  border-style: solid;
+  font: normal normal bold 17px/20px Arial;
+  color: #f5f5f5;
+  cursor: pointer;
+}
+
+.banos-wrapepr .search-btn {
+  width: 70px;
+  height: 43px;
+}
+
+.banos-wrapepr .sm-button:active {
+  transform: scale(0.96);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.banos-wrapepr #btns-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 115px; /* restaura separación original */
+  margin-bottom: 2.5rem;
+  flex-wrap: nowrap; /* evita que se vayan hacia abajo */
+}
+
+.banos-wrapepr .precio {
+  font: normal normal bold 49px/56px Arial;
+  color: #ff5701;
+}
+
+.banos-wrapepr .lg-button {
+  width: 506px;
+  max-width: 506px;
+  height: 176px;
+  font: normal normal bold 55px/64px Arial;
+  color: #2699fb;
+  border: 10px solid #bce0fd;
+  background: #bce0fd 0% 0% no-repeat padding-box;
+  box-shadow: inset 3px 3px 6px #ffffff88, 0px 10px 10px #0000000d;
+  border-radius: 24px;
+  cursor: pointer;
+}
+
+.banos-wrapepr .lg-button:disabled {
+  background-color: #e0e0e0;
+  border-color: #cccccc;
+  color: #888888;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.banos-wrapepr .lg-button:active {
+  transform: scale(0.96);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.banos-wrapepr #ticket-container {
+  width: 100%;
+  max-width: 1119px;
+  height: auto;
+  padding: 1rem;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 2px solid #2599fb;
+  border-radius: 20px;
+  margin: 0 auto;
+}
+
+.banos-wrapepr .ticket-text {
+  font: normal normal bold 20px/23px Arial;
+  color: #666666;
+}
+
+.banos-wrapepr .ticket-voucher {
+  font: normal normal normal 20px/23px Arial;
+  color: #707070;
+}
+
+.banos-wrapepr .qr-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.banos-wrapepr .img-qr {
+  width: auto;
+  height: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.banos-wrapepr .img-qr img {
+  width: 180px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.banos-wrapepr .img-qr-tk img {
+  width: 180px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 25px;
+}
+
+#contenedorQR {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+
+.banos-wrapepr .img-close-btn {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: 76px;
+  height: auto;
+  cursor: pointer;
+}
+
+/* modal resumen tickets */
+.banos-wrapepr #resumen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 9998;
+}
+
+.banos-wrapepr #resumen-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 1196px;
+  height: auto;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.banos-wrapepr .sales-summary {
+  position: relative;
+  background-color: white;
+  border: 3px solid #ff4500;
+  border-radius: 20px;
+  padding: 30px;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.banos-wrapepr .close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.banos-wrapepr .close-button:active {
+  transform: scale(0.96);
+}
+
+.banos-wrapepr .title {
+  text-align: center;
+  color: #ff6600;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.banos-wrapepr .table-container {
+  overflow-x: auto;
+}
+
+.banos-wrapepr table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.banos-wrapepr th {
+  text-align: left;
+  padding: 12px 15px;
+  color: #666;
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+}
+
+.banos-wrapepr td {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.banos-wrapepr .print-button {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  color: #ff6600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.banos-wrapepr .print-button:active {
+  color: #ff4500;
+  transform: scale(0.96);
+}
+
+/* modal ticket */
+.banos-wrapepr #ticket-overlay,
+.banos-wrapepr #ticket-print-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.banos-wrapepr #ticket-modal,
+.banos-wrapepr #ticket-print-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 607px;
+  height: auto;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.banos-wrapepr .ticket-info {
+  margin-bottom: 20px;
+}
+
+.banos-wrapepr .info-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.banos-wrapepr .info-item {
+  text-align: center;
+  flex: 1;
+  min-width: 120px;
+  margin-bottom: 20px;
+}
+
+.banos-wrapepr .info-label {
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.banos-wrapepr .info-value {
+  font-size: 16px;
+}
+
+.banos-wrapepr .qr-code {
+  display: flex;
+  justify-content: center;
+}
+
+.banos-wrapepr .qr-image {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.banos-wrapepr .button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* estilos personalizados sweet alert */
+.banos-wrapepr .my-confirm-btn {
+  width: 200px;
+  font: normal normal bold 30px Arial;
+  color: #2699fb;
+  border: 5px solid #bce0fd;
+  background: #bce0fd 0% 0% no-repeat padding-box;
+  box-shadow: inset 3px 3px 6px #ffffff88, 0px 10px 10px #0000000d;
+  border-radius: 24px;
+  cursor: pointer;
+}
+
+.banos-wrapepr .my-confirm-btn:active {
+  transform: scale(0.96);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.banos-wrapepr .alert-card {
+  box-shadow: 0px 0px 10px #00000029;
+  border-radius: 24px;
+}
+
+.banos-wrapepr .swal-font {
+  font-family: Arial, sans-serif;
+}
+
+/* Spinner */
+.banos-wrapepr #spinner {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(26, 26, 26, 0.5);
+  z-index: 9999;
+}
+
+.banos-wrapepr #spinner .spinner-border {
+  width: 4rem;
+  height: 4rem;
+  border-width: 0.5rem;
+  border-color: #ff4500 transparent #ff4500 transparent;
+}
