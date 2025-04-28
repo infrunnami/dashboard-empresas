@@ -1,12 +1,37 @@
-document.addEventListener("DOMContentLoaded", function () {
+if (window.pullmanInitialized) {
+  console.log("main ya ejecutado");
+} else {
+  window.pullmanInitialized = true;
+
+console.log("main cargado");
+
+// Ejecutamos directamente ya que la página está cargada dinámicamente
+initMain();
+}
+function initMain() {
+  console.log("initMain ejecutado");
+
   function openResumen() {
+    console.log("openResumen llamado correctamente")
     const modal = document.getElementById("resumen-overlay");
 
+    if (!modal) {
+      console.error("No se encontró el modal resumen-overlay");
+      return;
+    }
+
     showSpinner();
-    cargarTabla().then(() => {
-      hideSpinner();
-      modal.style.display = "flex";
-    });
+    modal.style.display = "flex";
+
+    cargarTabla()
+      .then(() => {
+        hideSpinner();
+        modal.style.display = "flex";
+      })
+      .catch((error) => {
+        hideSpinner();
+        console.error("Error en cargarTabla:", error);
+      });
   }
 
   function crearQRCode(target, text) {
@@ -21,18 +46,20 @@ document.addEventListener("DOMContentLoaded", function () {
   function cargarTabla() {
     const endpointURL = urlBase + "/TerminalCalama/PHP/Restroom/load.php";
     const tableBody = document.getElementById("sales-table-body");
-
-    tableBody.innerHTML = "";
-
+  
+    console.log("cargar nuevos datos");
+    tableBody.innerHTML = ""; // Asegurar limpiar
+  
     return fetch(endpointURL)
       .then((response) => response.json())
       .then((data) => {
+  
         const ordenado = data.sort((a, b) => {
           const fechaA = new Date(`${a.date} ${a.time}`);
           const fechaB = new Date(`${b.date} ${b.time}`);
           return fechaB - fechaA;
         });
-
+  
         const ultimos = ordenado.slice(0, 8);
 
         ultimos.forEach((item) => {
@@ -66,181 +93,110 @@ document.addEventListener("DOMContentLoaded", function () {
               <rect x="6" y="14" width="12" height="8"></rect>
             </svg>
           `;
+
           printButton.addEventListener("click", async function () {
             const overlay = document.getElementById("ticket-print-overlay");
             const modal = document.getElementById("ticket-print-modal");
             const modalResume = document.getElementById("resumen-overlay");
+
+            if (!overlay || !modal || !modalResume) {
+              console.error("No se encontraron elementos para imprimir el ticket");
+              return;
+            }
+
             modalResume.style.display = "none";
             overlay.style.display = "none";
 
             showSpinner();
 
             const userPin = item.Codigo.slice(0, 6);
-
             const urlEstado = `${urlBase}/TerminalCalama/PHP/Restroom/estadoBoleto.php?userPin=${userPin}`;
 
-            const resEstado = await fetch(urlEstado);
-            if (!resEstado.ok) {
-              throw new Error("Error al obtener estado del boleto.");
-            }
-            const dataEstado = await resEstado.json();
-            let estadoTicket = dataEstado.message || "No encontrado";
-            estadoTicket = estadoTicket.toUpperCase().replace(/\.$/, "");
-
-            const infoItems = modal.querySelectorAll(".info-item");
-            infoItems.forEach((infoItem) => {
-              const label = infoItem
-                .querySelector(".info-label")
-                .textContent.trim();
-              const value = infoItem.querySelector(".info-value");
-
-              if (label === "ESTADO") {
-                value.textContent = estadoTicket;
-                value.style.fontWeight = "bold";
-                if (estadoTicket === "EL BOLETO HA SIDO OCUPADO") {
-                  value.style.color = "red";
-                } else {
-                  value.style.color = "green";
-                }
+            try {
+              const resEstado = await fetch(urlEstado);
+              if (!resEstado.ok) {
+                throw new Error("Error al obtener estado del boleto.");
               }
+              const dataEstado = await resEstado.json();
+              let estadoTicket = dataEstado.message || "No encontrado";
+              estadoTicket = estadoTicket.toUpperCase().replace(/\.$/, "");
 
-              if (label === "TIPO") value.textContent = item.tipo;
-              if (label === "CÓDIGO") value.textContent = item.Codigo;
-              if (label === "FECHA") value.textContent = item.date;
-              if (label === "HORA") value.textContent = item.time;
-            });
+              const infoItems = modal.querySelectorAll(".info-item");
+              infoItems.forEach((infoItem) => {
+                const label = infoItem.querySelector(".info-label").textContent.trim();
+                const value = infoItem.querySelector(".info-value");
 
-            const numeroT = item.Codigo;
-            const contenedorTicketQR1 = document.getElementById("contenedorTicketQR1");
-            crearQRCode(contenedorTicketQR1, numeroT);
+                if (label === "ESTADO") {
+                  value.textContent = estadoTicket;
+                  value.style.fontWeight = "bold";
+                  value.style.color = estadoTicket === "EL BOLETO HA SIDO OCUPADO" ? "red" : "green";
+                }
+                if (label === "TIPO") value.textContent = item.tipo;
+                if (label === "CÓDIGO") value.textContent = item.Codigo;
+                if (label === "FECHA") value.textContent = item.date;
+                if (label === "HORA") value.textContent = item.time;
+              });
 
-            hideSpinner();
-            overlay.style.display = "flex";
+              const contenedorTicketQR1 = document.getElementById("contenedorTicketQR1");
+              crearQRCode(contenedorTicketQR1, item.Codigo);
 
-            reimprimirBtn1.addEventListener("click", function () {
-              // lógica de reimpresión
-            });
+              overlay.style.display = "flex";
+            } catch (err) {
+              console.error("Error en impresión de ticket:", err);
+            } finally {
+              hideSpinner();
+            }
           });
 
           printCell.appendChild(printButton);
           row.appendChild(printCell);
           tableBody.appendChild(row);
         });
-      })
-      .catch((error) => {
-        console.error("Error al obtener datos:", error);
       });
   }
 
-  document
-    .getElementById("resumen-overlay")
-    .addEventListener("click", function (e) {
-      if (e.target.id === "resumen-overlay") {
-        closeResumen();
-      }
-    });
+  function closeResumen() {
+    const modal = document.getElementById("resumen-overlay");
+    if (modal) modal.style.display = "none";
+  }
 
-  document
-    .getElementById("resumen-button")
-    .addEventListener("click", openResumen);
+  function closeTicketModal() {
+    const modal = document.getElementById("ticket-print-overlay");
+    if (modal) modal.style.display = "none";
+  }
 
-  document
-    .getElementById("ticket-print-overlay")
-    .addEventListener("click", function (e) {
-      if (e.target.id === "ticket-print-overlay") {
-        closeTicketModal();
-      }
-    });
-});
+  function showSpinner() {
+    const spinner = document.getElementById("spinner");
+    if (spinner) spinner.style.display = "flex";
+  }
 
-function closeResumen() {
-  const modal = document.getElementById("resumen-overlay");
-  modal.style.display = "none";
-}
+  function hideSpinner() {
+    const spinner = document.getElementById("spinner");
+    if (spinner) spinner.style.display = "none";
+  }
 
-function closeTicketModal() {
-  document.getElementById("ticket-print-overlay").style.display = "none";
-}
 
-// modal de ticket
-document.addEventListener("DOMContentLoaded", function () {
-  const modal = document.getElementById("ticket-overlay");
-  const inputField = document.getElementById("ticketInput");
-  const closeBtn = document.querySelector(".close-button");
-  const reimprimirBtn2 = document.getElementById("reimprimirBtn2");
-  const searchBtn = document.getElementById("searchTicketBtn");
+  function initModalTicket(){
+    const modal = document.getElementById("ticket-overlay");
+    const inputField = document.getElementById("ticketInput");
+    const closeBtn = document.querySelector(".close-button");
+    const reimprimirBtn2 = document.getElementById("reimprimirBtn2");
+    const searchBtn = document.getElementById("searchTicketBtn");
 
-  const tipoEl = modal.querySelector(".info-item:nth-child(1) .info-value");
-  const codigoEl = modal.querySelector(".info-item:nth-child(2) .info-value");
-  const fechaEl = modal.querySelector(".info-item:nth-child(3) .info-value");
-  const horaEl = modal.querySelector(".info-item:nth-child(4) .info-value");
-  const estadoEl = modal.querySelector(".info-item:nth-child(5) .info-value");
+    const tipoEl = modal.querySelector(".info-item:nth-child(1) .info-value");
+    const codigoEl = modal.querySelector(".info-item:nth-child(2) .info-value");
+    const fechaEl = modal.querySelector(".info-item:nth-child(3) .info-value");
+    const horaEl = modal.querySelector(".info-item:nth-child(4) .info-value");
+    const estadoEl = modal.querySelector(".info-item:nth-child(5) .info-value");
 
-  searchBtn.addEventListener("click", async function () {
-    const codigo = inputField.value.trim();
-
-    if (!/^\d{10}$/.test(codigo)) {
-      Swal.fire({
-        icon: "warning",
-        title: "Código inválido",
-        text: "El código debe contener exactamente 10 números.",
-        customClass: {
-          title: "swal-font",
-          htmlContainer: "swal-font",
-          popup: "alert-card",
-          confirmButton: "my-confirm-btn",
-        },
-        buttonsStyling: false,
-      });
-      return;
-    }
-
-    if (!codigo) return;
-
-    showSpinner();
-
-    const userPin = codigo.slice(0, 6);
-
-    const url = `${urlBase}/TerminalCalama/PHP/Restroom/getCodigo.php?codigo=${codigo}`;
-    const urlEstado = `${urlBase}/TerminalCalama/PHP/Restroom/estadoBoleto.php?userPin=${userPin}`;
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      const ticket = data.find((t) => t.Codigo === codigo);
-      console.log(ticket);
-
-      const resEstado = await fetch(urlEstado);
-      const dataEstado = await resEstado.json();
-      let estadoTicket = dataEstado.message || "No encontrado";
-      estadoTicket = estadoTicket.toUpperCase().replace(/\.$/, "");
-
-      estadoEl.textContent = estadoTicket;
-      estadoEl.style.fontWeight = "bold";
-
-      if (estadoTicket === "BOLETO SIN USAR") {
-        estadoEl.style.color = "green";
-      } else {
-        estadoEl.style.color = "red";
-      }
-
-      if (ticket) {
-        tipoEl.textContent = ticket.tipo;
-        codigoEl.textContent = ticket.Codigo;
-        fechaEl.textContent = ticket.date;
-        horaEl.textContent = ticket.time;
-
-        const numeroT = ticket.Codigo;
-
-        const contenedorTicketQR2 = document.getElementById("contenedorTicketQR2");
-        crearQRCode(contenedorTicketQR2, numeroT);
-
-        modal.style.display = "flex";
-      } else {
+    searchBtn.addEventListener("click", async function () {
+      const codigo = inputField.value.trim();
+    
+      if (!/^\d{10}$/.test(codigo)) {
         Swal.fire({
-          icon: "error",
-          title: "No encontrado",
-          text: "No se encontró ningún ticket con ese código.",
+          icon: "warning",
+          title: "Código inválido",
+          text: "El código debe contener exactamente 10 números.",
           customClass: {
             title: "swal-font",
             htmlContainer: "swal-font",
@@ -249,50 +205,132 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           buttonsStyling: false,
         });
-        modal.style.display = "none";
+        return;
       }
-    } catch (err) {
-      console.error("Error al buscar ticket:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Ocurrió un error al buscar el ticket. Intenta nuevamente.",
-        customClass: {
-          title: "swal-font",
-          htmlContainer: "swal-font",
-          popup: "alert-card",
-          confirmButton: "my-confirm-btn",
-        },
-        buttonsStyling: false,
+  
+      if (!codigo) return;
+      
+      closeBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+        inputField.value = ""; // Limpia el input cuando cierran el modal
       });
-    } finally {
-      hideSpinner();
-    }
+      
+      showSpinner();
+  
+      const userPin = codigo.slice(0, 6);
+  
+      const url = `${urlBase}/TerminalCalama/PHP/Restroom/getCodigo.php?codigo=${codigo}`;
+      const urlEstado = `${urlBase}/TerminalCalama/PHP/Restroom/estadoBoleto.php?userPin=${userPin}`;
+  
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const ticket = data.find((t) => t.Codigo === codigo);
+        console.log(ticket);
+  
+        const resEstado = await fetch(urlEstado);
+        const dataEstado = await resEstado.json();
+        let estadoTicket = dataEstado.message || "No encontrado";
+        estadoTicket = estadoTicket.toUpperCase().replace(/\.$/, "");
+  
+        estadoEl.textContent = estadoTicket;
+        estadoEl.style.fontWeight = "bold";
+  
+        if (estadoTicket === "BOLETO SIN USAR") {
+          estadoEl.style.color = "green";
+        } else {
+          estadoEl.style.color = "red";
+        }
+  
+        if (ticket) {
+          tipoEl.textContent = ticket.tipo;
+          codigoEl.textContent = ticket.Codigo;
+          fechaEl.textContent = ticket.date;
+          horaEl.textContent = ticket.time;
+  
+          const numeroT = ticket.Codigo;
+  
+          const contenedorTicketQR2 = document.getElementById(
+            "contenedorTicketQR2"
+          );
+          contenedorTicketQR2.innerHTML = "";
+  
+          const qr = new QRCode(contenedorTicketQR2, {
+            text: numeroT,
+          });
+  
+          modal.style.display = "flex";
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "No encontrado",
+            text: "No se encontró ningún ticket con ese código.",
+            customClass: {
+              title: "swal-font",
+              htmlContainer: "swal-font",
+              popup: "alert-card",
+              confirmButton: "my-confirm-btn",
+            },
+            buttonsStyling: false,
+          });
+          modal.style.display = "none";
+        }
+      } catch (err) {
+        console.error("Error al buscar ticket:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al buscar el ticket. Intenta nuevamente.",
+          customClass: {
+            title: "swal-font",
+            htmlContainer: "swal-font",
+            popup: "alert-card",
+            confirmButton: "my-confirm-btn",
+          },
+          buttonsStyling: false,
+        });
+      } finally {
+        hideSpinner();
+      }
+    });
+  }
+
+  // Exponer al window
+  window.closeResumen = closeResumen;
+  window.closeTicketModal = closeTicketModal;
+
+  // Conectar eventos
+  document.getElementById("resumen-button")?.addEventListener("click", openResumen);
+  document.getElementById("resumen-overlay")?.addEventListener("click", function (e) {
+    if (e.target.id === "resumen-overlay") closeResumen();
+  });
+  document.getElementById("ticket-print-overlay")?.addEventListener("click", function (e) {
+    if (e.target.id === "ticket-print-overlay") closeTicketModal();
   });
 
-  closeBtn.addEventListener("click", function () {
-    modal.style.display = "none";
-    inputField.value = "";
-  });
+  initModalTicket();
 
   window.addEventListener("click", function (event) {
-    if (event.target === modal) {
-      modal.style.display = "none";
-      inputField.value = "";
+    const modalTicket = document.getElementById("ticket-overlay");
+    if (event.target === modalTicket) {
+      modalTicket.style.display = "none";
+      const inputField = document.getElementById("ticketInput");
+      if (inputField) inputField.value = "";
     }
   });
 
-  reimprimirBtn2.addEventListener("click", function () {
-    // Tu lógica de reimpresión
-  });
-});
 
-function showSpinner() {
-  const spinner = document.getElementById("spinner");
-  if (spinner) spinner.style.display = "flex";
-}
+  // animacion codigo qr
+  if (typeof rotation === "undefined") {
+    var rotation = 0;
+  }
 
-function hideSpinner() {
-  const spinner = document.getElementById("spinner");
-  if (spinner) spinner.style.display = "none";
+  function rotateQR() {
+    rotation += 90;
+    document.querySelector(".img-qr").style.transform = `rotate(${rotation}deg)`;
+  }
+
+  document.querySelector(".btn-genera-baño").addEventListener("click", rotateQR);
+  document.querySelector(".btn-genera-ducha").addEventListener("click", rotateQR);
+  
 }

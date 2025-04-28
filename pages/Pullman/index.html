@@ -1,109 +1,187 @@
-
 <div class="banos-wrapepr">
     <div id="spinner" style="display: none; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(26, 26, 26, 0.5); z-index: 9999;">
-    <div class="spinner-border" role="status" style="width: 4rem; height: 4rem; border-width: 0.5rem; border-color: #ff4500 transparent #ff4500 transparent;">
-        <span class="visually-hidden"></span>
-    </div>
+        <div class="spinner-border" role="status" style="width: 4rem; height: 4rem; border-width: 0.5rem; border-color: #ff4500 transparent #ff4500 transparent;">
+            <span class="visually-hidden"></span>
+        </div>
     </div>
 
     <header>
-    <nav>
-        <img src="assets/img/Pullman/LOGOTIPO_PB_NARANJO_NORMA@2x.png" alt="Logo Pullman" class="logo-pullman" />
-        <h1>MODULO DE CAJA BAÑOS</h1>
-        <img src="assets/img/Pullman/wit@2x.png" alt="Logo Wit" class="logo-wit" />
-    </nav>
+        <nav>
+            <img src="assets/img/Pullman/LOGOTIPO_PB_NARANJO_NORMA@2x.png" alt="Logo Pullman" class="logo-pullman" />
+            <h1>MODULO DE CAJA BAÑOS</h1>
+            <img src="assets/img/Pullman/wit@2x.png" alt="Logo Wit" class="logo-wit" />
+        </nav>
     </header>
 
     <main>
-    <div id="codigo-container">
-        <div class="codigo-input-container">
-        <img class="input-icon" src="assets/img/Pullman/LUPA.svg" alt="Search" style="height: 16px" />
-        <div class="input-container">
-            <input type="text" id="ticketInput" class="codigo-input" placeholder="Código" autocomplete="off" autocorrect="off" />
-        </div>
-        <div id="ticket-overlay">
-            <!-- Modal contenido -->
-        </div>
-        </div>
-        <button id="searchTicketBtn" class="sm-button search-btn">
-        <img src="assets/img/Pullman/LUPA boton.svg" alt="Search" style="height: 20px" fill="white" />
-        </button>
-        <button id="resumen-button" class="sm-button">VERIFICAR CÓDIGO</button>
-
-        <!-- Resumen overlay -->
-        <div id="resumen-overlay">
-        <div id="resumen-modal">
-            <div class="sales-summary">
-            <button class="close-button" onclick="closeResumen()">
-                <img class="img-close-btn" src="assets/img/Pullman/SALIR@2x.png" alt="Cerrar" />
+        <div id="codigo-container">
+            <div class="codigo-input-container">
+                <img class="input-icon" src="assets/img/Pullman/LUPA.svg" alt="Search" style="height: 16px" />
+                <div class="input-container">
+                    <input type="text" id="ticketInput" class="codigo-input" placeholder="Código" autocomplete="off" autocorrect="off" />
+                </div>
+                
+                <!-- Modal para visualizar ticket -->
+                <div id="ticket-overlay">
+                    <div id="ticket-modal">
+                        <div class="sales-summary">
+                            <button class="close-button" onclick="closeTicketModal()">
+                                <img class="img-close-btn" src="assets/img/Pullman/SALIR@2x.png" alt="Cerrar" />
+                            </button>
+                            <h1 class="title">TICKET</h1>
+                            <div class="table-container">
+                                <div class="info-row">
+                                    <div class="info-item">
+                                        <div class="info-label">TIPO</div>
+                                        <div class="info-value"></div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">CÓDIGO</div>
+                                        <div class="info-value"></div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">FECHA</div>
+                                        <div class="info-value"></div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">HORA</div>
+                                        <div class="info-value"></div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">ESTADO</div>
+                                        <div class="info-value"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="contenedorTicketQR2" class="img-qr-tk col"></div>
+                            <div class="button-container">
+                                <button id="reimprimirBtn2" class="sm-button">REIMPRIMIR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="searchTicketBtn" class="sm-button search-btn">
+                <img src="assets/img/Pullman/LUPA boton.svg" alt="Search" style="height: 20px" fill="white" />
             </button>
-            <h1 class="title">RESUMEN DE VENTA</h1>
-            <div class="table-container">
-                <table>
-                <thead>
-                    <tr class="text-center">
-                    <th>TIPO</th>
-                    <th>CÓDIGO</th>
-                    <th>FECHA</th>
-                    <th>HORA</th>
-                    <th>IMPRIMIR</th>
-                    </tr>
-                </thead>
-                <tbody id="sales-table-body"></tbody>
-                </table>
-            </div>
-            </div>
-        </div>
-        </div>
-
-        <button class="sm-button" onclick="parent.loadPage('Pullman/home.html')">
-        VOLVER
-        </button>
-    </div>
-
-    <h2 class="text-center">Elija la opción según servicio, para imprimir Ticket.</h2>
-
-    <div id="btns-container">
-        <button class="btn-genera-baño lg-button generarQR" data-tipo="BAÑO">BAÑO <br /><span class="precio">$500</span></button>
-        <button class="btn-genera-ducha lg-button generarQR" data-tipo="DUCHA">DUCHA <br /><span class="precio">$4.000</span></button>
-    </div>
-
-    <div id="ticket-container" class="container">
-        <div class="row">
-            <h3 class="text-center pb-2">ULTIMO TICKET y BOLETA IMPRESO</h3>
             
-            <div id="contenedorQR" class="img-qr col"></div>
-            
-            <div class="ticket-text col">
-                <p>CÓDIGO TICKET</p>
-                <p>TIPO</p>
-                <p>FECHA</p>
-                <p>HORA</p>
+            <button id="resumen-button" class="sm-button">VERIFICAR CÓDIGO</button>
+
+            <!-- Modal para resumen de ventas -->
+            <div id="resumen-overlay">
+                <div id="resumen-modal">
+                    <div class="sales-summary">
+                        <button class="close-button" onclick="closeResumen()">
+                            <img class="img-close-btn" src="assets/img/Pullman/SALIR@2x.png" alt="Cerrar" />
+                        </button>
+                        <h1 class="title">RESUMEN DE VENTA</h1>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>TIPO</th>
+                                        <th>CÓDIGO</th>
+                                        <th>FECHA</th>
+                                        <th>HORA</th>
+                                        <th>IMPRIMIR</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sales-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="ticket-text col">
-                <p id="codigo"></p>
-                <p id="tipo"></p>
-                <p id="fecha"></p>
-                <p id="hora"></p>
+
+            <!-- Modal para imprimir ticket -->
+            <div id="ticket-print-overlay">
+                <div id="ticket-print-modal">
+                    <div class="sales-summary">
+                        <button class="close-button" onclick="closeTicketModal()">
+                            <img class="img-close-btn" src="assets/img/Pullman/SALIR@2x.png" alt="Cerrar" />
+                        </button>
+                        <h1 class="title">TICKET</h1>
+                        <div class="table-container">
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <div class="info-label">TIPO</div>
+                                    <div class="info-value"></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">CÓDIGO</div>
+                                    <div class="info-value"></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">FECHA</div>
+                                    <div class="info-value"></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">HORA</div>
+                                    <div class="info-value"></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">ESTADO</div>
+                                    <div class="info-value"></div>
+                                </div>
+                            </div>
+                            <div id="contenedorTicketQR1" class="img-qr-tk col"></div>
+                            <div class="button-container">
+                                <button id="reimprimirBtn1" class="sm-button">REIMPRIMIR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="ticket-voucher col">
-                <p class="fw-bold">N° Boleta: VKKK-0256</p>
-                <p>Valor Neto: $420</p>
-                <p>IVA 19%: $80</p>
-                <span>----------------------------------</span>
-                <p>TOTAL: $500</p>
+
+            <button class="sm-button" onclick="parent.loadPage('Pullman/home.html')">
+                VOLVER
+            </button>
+        </div>
+
+        <h2 class="text-center">Elija la opción según servicio, para imprimir Ticket.</h2>
+
+        <div id="btns-container">
+            <button class="btn-genera-baño lg-button generarQR" data-tipo="BAÑO">BAÑO <br /><span class="precio">$500</span></button>
+            <button class="btn-genera-ducha lg-button generarQR" data-tipo="DUCHA">DUCHA <br /><span class="precio">$4.000</span></button>
+        </div>
+
+        <div id="ticket-container" class="container">
+            <div class="row">
+                <h3 class="text-center pb-2">ULTIMO TICKET y BOLETA IMPRESO</h3>
+                
+                <div id="contenedorQR" class="img-qr col"></div>
+                
+                <div class="ticket-text col">
+                    <p>CÓDIGO TICKET</p>
+                    <p>TIPO</p>
+                    <p>FECHA</p>
+                    <p>HORA</p>
+                </div>
+                <div class="ticket-text col">
+                    <p id="codigo"></p>
+                    <p id="tipo"></p>
+                    <p id="fecha"></p>
+                    <p id="hora"></p>
+                </div>
+                <div class="ticket-voucher col">
+                    <p class="fw-bold">N° Boleta: VKKK-0256</p>
+                    <p>Valor Neto: $420</p>
+                    <p>IVA 19%: $80</p>
+                    <span>---------------------------------</span>
+                    <p>TOTAL: $500</p>
+                </div>
             </div>
         </div>
-    </div>
     </main>
 </div>
+
 <!-- Links de CSS y JS -->
- 
 <link rel="stylesheet" href="assets/css/Pullman/style.css" />
 
 <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script defer src="assets/js/Pullman/main.js"></script>
 <script defer src="assets/js/Pullman/tickets.js"></script>
+<script defer src="assets/js/Pullman/main.js"></script>
 <script>
     initTickets();
 </script>

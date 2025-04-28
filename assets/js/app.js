@@ -31,12 +31,31 @@ function toggleSidebar() {
 
 function loadPage(page) {
     $("#content").load("pages/" + page, function () {
+        console.log("Página cargada:", page);
+
         if (page === "users.html") {
             loadUsers();
         }
-        // Si necesitas funciones específicas para otras páginas, las agregas aquí
+
+        if (page === "Pullman/index.html") {
+            console.log("Detectado Pullman/index.html");
+
+            // Eliminamos si existe uno anterior
+            let oldScript = document.getElementById("pullman-script");
+            if (oldScript) {
+                oldScript.remove();
+            }
+
+            // Creamos uno nuevo
+            let script = document.createElement("script");
+            script.src = "assets/js/Pullman/main.js";
+            script.id = "pullman-script"; // le ponemos id para controlarlo mejor
+            document.body.appendChild(script);
+        }
     });
 }
+
+
 function logout() {
     axios.post(config.urlBase+"logout.php", {}, { withCredentials: true })
         .then(() => {
