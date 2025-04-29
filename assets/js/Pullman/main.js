@@ -320,17 +320,15 @@ function initMain() {
   });
 
 
-  // animacion codigo qr
-  if (typeof rotation === "undefined") {
-    var rotation = 0;
+  if (typeof reimprimirBtn2 === "undefined") {
+    var reimprimirBtn2 = document.getElementById("reimprimirBtn2");
   }
 
-  function rotateQR() {
-    rotation += 90;
-    document.querySelector(".img-qr").style.transform = `rotate(${rotation}deg)`;
+  if (reimprimirBtn2) {
+    reimprimirBtn2.addEventListener("click", function () {
+      console.log("Botón reimprimir clickeado");
+      // Aquí puedes implementar lógica real de reimpresión si quieres
+    });
   }
-
-  document.querySelector(".btn-genera-baño").addEventListener("click", rotateQR);
-  document.querySelector(".btn-genera-ducha").addEventListener("click", rotateQR);
   
 }
